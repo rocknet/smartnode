@@ -543,6 +543,21 @@ func startService(c *cli.Context, ignoreConfigSuggestion bool) error {
 		return nil
 	}
 
+	// If Obol is enabled, warn that any non-Obol validators will no longer attest
+	// TODO: Can we get smarter about this check?
+	obolEnabled := cfg.Obol.GetEnabledParameter().Value.(bool)
+	if obolEnabled {
+		fmt.Printf("%sWARNING: You have Obol integration enabled. Any non-Obol validators will no longer perform duties while Obol is active.%s\n", colorYellow, colorReset)
+		fmt.Println("Rocket Pool wallet derived validator keys are full keys and not compatible with Obol Charon DVT middleware, so Charon cannot sign for them.")
+		fmt.Println()
+		fmt.Println("If you have non-Obol validators, please disable Obol integration in order to keep them performing their duties.")
+		fmt.Println()
+		if !prompt.Confirm(fmt.Sprintf("Press y when you understand the above warning, have no active non-Obol validators, and are ready to start Rocket Pool:%s", colorReset)) {
+			fmt.Println("Cancelled.")
+			return nil
+		}
+	}
+
 	if !c.Bool("ignore-slash-timer") {
 		// Do the client swap check
 		err := checkForValidatorChange(rp, cfg)

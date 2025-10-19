@@ -3,6 +3,18 @@
 
 GWW_GRAFFITI_FILE="/addons/gww/graffiti.txt"
 
+# Set up Charon URL and distributed flag if Obol is enabled
+if [ "$ADDON_OBOL_ENABLED" = "true" ]; then
+    CC_API_ENDPOINT="http://charon:3600"
+    CC_RPC_ENDPOINT="http://charon:3600"
+    FALLBACK_CC_API_ENDPOINT="" # Charon can be setup with multiple beacon nodes, and Charon:cluster is 1:1, so no fallback here
+    DISTRIBUTED_FLAG="--distributed"
+    TEKU_DISTRIBUTED_FLAG="--Xobol-dvt-integration-enabled"
+else
+    DISTRIBUTED_FLAG=""
+    TEKU_DISTRIBUTED_FLAG=""
+fi
+
 # Set up the network-based flags
 if [ "$NETWORK" = "mainnet" ]; then
     LH_NETWORK="mainnet"
@@ -47,6 +59,7 @@ if [ "$CC_CLIENT" = "lighthouse" ]; then
         --logfile-max-number 0 \
         --beacon-nodes $CC_URL_STRING \
         --suggested-fee-recipient $(cat /validators/$FEE_RECIPIENT_FILE) \
+        $DISTRIBUTED_FLAG \
         $VC_ADDITIONAL_FLAGS"
 
     if [ ! -z "$VC_SUGGESTED_BLOCK_GAS_LIMIT" ]; then
@@ -98,6 +111,7 @@ if [ "$CC_CLIENT" = "lodestar" ]; then
         --keystoresDir /validators/lodestar/validators \
         --secretsDir /validators/lodestar/secrets \
         --suggestedFeeRecipient $(cat /validators/$FEE_RECIPIENT_FILE) \
+        $DISTRIBUTED_FLAG \
         $VC_ADDITIONAL_FLAGS"
 
 if [ ! -z "$VC_SUGGESTED_BLOCK_GAS_LIMIT" ]; then
@@ -146,6 +160,7 @@ if [ "$CC_CLIENT" = "nimbus" ]; then
         --doppelganger-detection=$DOPPELGANGER_DETECTION \
         --suggested-fee-recipient=$(cat /validators/$FEE_RECIPIENT_FILE) \
         --block-monitor-type=event \
+        $DISTRIBUTED_FLAG \
         $VC_ADDITIONAL_FLAGS"
 
     if [ "$ENABLE_MEV_BOOST" = "true" ]; then
@@ -182,6 +197,7 @@ if [ "$CC_CLIENT" = "prysm" ]; then
         --wallet-password-file /validators/prysm-non-hd/direct/accounts/secret \
         --beacon-rpc-provider $CC_URL_STRING \
         --suggested-fee-recipient $(cat /validators/$FEE_RECIPIENT_FILE) \
+        $DISTRIBUTED_FLAG \
         $VC_ADDITIONAL_FLAGS"
 
     if [ ! -z "$VC_SUGGESTED_BLOCK_GAS_LIMIT" ]; then
@@ -236,6 +252,7 @@ if [ "$CC_CLIENT" = "teku" ]; then
         --validators-keystore-locking-enabled=false \
         --log-destination=CONSOLE \
         --validators-proposer-default-fee-recipient=$(cat /validators/$FEE_RECIPIENT_FILE) \
+        $TEKU_DISTRIBUTED_FLAG \
         $VC_ADDITIONAL_FLAGS"
 
     if [ "$DOPPELGANGER_DETECTION" = "true" ]; then

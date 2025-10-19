@@ -130,6 +130,7 @@ type RocketPoolConfig struct {
 	// Addons
 	GraffitiWallWriter addontypes.SmartnodeAddon `yaml:"addon-gww,omitempty"`
 	RescueNode         addontypes.SmartnodeAddon `yaml:"addon-rescue-node,omitempty"`
+	Obol               addontypes.SmartnodeAddon `yaml:"addon-obol,omitempty"`
 }
 
 // Get the external IP address. Try finding an IPv4 address first to:
@@ -484,6 +485,7 @@ func NewRocketPoolConfig(rpDir string, isNativeMode bool) *RocketPoolConfig {
 	// Addons
 	cfg.GraffitiWallWriter = addons.NewGraffitiWallWriter()
 	cfg.RescueNode = addons.NewRescueNode()
+	cfg.Obol = addons.NewObol()
 
 	// Apply the default values for mainnet
 	cfg.Smartnode.Network.Value = cfg.Smartnode.Network.Options[0].Value
@@ -588,6 +590,7 @@ func (cfg *RocketPoolConfig) GetSubconfigs() map[string]config.Config {
 		"mevBoost":           cfg.MevBoost,
 		"addons-gww":         cfg.GraffitiWallWriter.GetConfig(),
 		"addons-rescue-node": cfg.RescueNode.GetConfig(),
+		"addons-obol":        cfg.Obol.GetConfig(),
 	}
 }
 

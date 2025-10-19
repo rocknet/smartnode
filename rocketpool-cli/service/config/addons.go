@@ -19,6 +19,8 @@ type AddonsPage struct {
 	gwwButton        *parameterizedFormItem
 	rescueNodePage   *AddonRescueNodePage
 	rescueNodeButton *parameterizedFormItem
+	obolPage         *AddonObolPage
+	obolButton       *parameterizedFormItem
 	categoryList     *tview.List
 	addonSubpages    []settingsPage
 	content          tview.Primitive
@@ -42,9 +44,11 @@ func NewAddonsPage(home *settingsHome) *AddonsPage {
 	// Create the addon subpages
 	addonsPage.gwwPage = NewAddonGwwPage(addonsPage, home.md.Config.GraffitiWallWriter)
 	addonsPage.rescueNodePage = NewAddonRescueNodePage(addonsPage, home.md.Config.RescueNode)
+	addonsPage.obolPage = NewAddonObolPage(addonsPage, home.md.Config.Obol)
 	addonSubpages := []settingsPage{
 		addonsPage.gwwPage,
 		addonsPage.rescueNodePage,
+		addonsPage.obolPage,
 	}
 	addonsPage.addonSubpages = addonSubpages
 

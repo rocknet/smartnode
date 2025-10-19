@@ -24,6 +24,7 @@ import (
 	"github.com/blang/semver/v4"
 	"github.com/mitchellh/go-homedir"
 	"github.com/rocket-pool/smartnode/addons/graffiti_wall_writer"
+	"github.com/rocket-pool/smartnode/addons/obol"
 	"github.com/rocket-pool/smartnode/shared/services/config"
 	"github.com/rocket-pool/smartnode/shared/services/rocketpool/assets"
 	"github.com/rocket-pool/smartnode/shared/services/rocketpool/template"
@@ -931,6 +932,11 @@ func (c *Client) RunNethermindPruneStarter(executionContainerName string) error 
 	return nil
 }
 
+// RunDockerCommand executes a docker command and prints output to stdout/stderr
+func (c *Client) RunDockerCommand(cmdText string) error {
+	return c.printOutput(cmdText)
+}
+
 // Deletes the node wallet and all validator keys, and restarts the Docker containers
 func (c *Client) PurgeAllKeys(composeFiles []string) error {
 
@@ -1242,6 +1248,35 @@ func (c *Client) composeAddons(cfg *config.RocketPoolConfig, rocketpoolDir strin
 		deployedContainers = append(deployedContainers, containers...)
 	}
 
+	// Obol
+	if cfg.Obol.GetEnabledParameter().Value == true {
+
+		composePaths := template.ComposePaths{
+			RuntimePath:  filepath.Join(rocketpoolDir, runtimeDir, "addons", "obol"),
+			TemplatePath: filepath.Join(rocketpoolDir, templatesDir, "addons", "obol"),
+			OverridePath: filepath.Join(rocketpoolDir, overrideDir, "addons", "obol"),
+		}
+
+		// Make the addon folder
+		err := os.MkdirAll(composePaths.RuntimePath, 0775)
+		if err != nil {
+			return []string{}, fmt.Errorf("error creating addon runtime folder (%s): %w", composePaths.RuntimePath, err)
+		}
+
+		// Make the data folder for charon
+		obolDataDir := filepath.Join(rocketpoolDir, "addons", "obol")
+		err = os.MkdirAll(obolDataDir, 0775)
+		if err != nil {
+			return []string{}, fmt.Errorf("error creating obol data folder (%s): %w", obolDataDir, err)
+		}
+
+		containers, err := composePaths.File(obol.CharonContainerName).Write(cfg)
+		if err != nil {
+			return []string{}, fmt.Errorf("could not create obol container definition: %w", err)
+		}
+		deployedContainers = append(deployedContainers, containers...)
+	}
+
 	return deployedContainers, nil
 
 }
@@ -1467,4 +1502,9 @@ func (c *Client) GetContainerPrefix() (string, error) {
 	}
 
 	return cfg.Smartnode.ProjectName.Value.(string), nil
+}
+
+// Run a command and return its output as a byte array
+func (c *Client) RunCommandAndReturnOutput(cmdText string) ([]byte, error) {
+	return c.readOutput(cmdText)
 }

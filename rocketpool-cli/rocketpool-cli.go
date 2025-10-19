@@ -13,6 +13,7 @@ import (
 	"github.com/rocket-pool/smartnode/rocketpool-cli/minipool"
 	"github.com/rocket-pool/smartnode/rocketpool-cli/network"
 	"github.com/rocket-pool/smartnode/rocketpool-cli/node"
+	"github.com/rocket-pool/smartnode/rocketpool-cli/obol"
 	"github.com/rocket-pool/smartnode/rocketpool-cli/odao"
 	"github.com/rocket-pool/smartnode/rocketpool-cli/pdao"
 	"github.com/rocket-pool/smartnode/rocketpool-cli/queue"
@@ -109,6 +110,7 @@ A special thanks to the Rocket Pool community for all their contributions.
 	security.RegisterCommands(app, "security", []string{"c"})
 	service.RegisterCommands(app, "service", []string{"s"})
 	wallet.RegisterCommands(app, "wallet", []string{"w"})
+	obol.RegisterCommands(app, "obol", []string{})
 
 	app.Before = func(c *cli.Context) error {
 		// Check user ID

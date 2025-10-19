@@ -2,6 +2,7 @@ package addons
 
 import (
 	"github.com/rocket-pool/smartnode/addons/graffiti_wall_writer"
+	"github.com/rocket-pool/smartnode/addons/obol"
 	"github.com/rocket-pool/smartnode/addons/rescue_node"
 	"github.com/rocket-pool/smartnode/shared/types/addons"
 )
@@ -12,4 +13,8 @@ func NewGraffitiWallWriter() addons.SmartnodeAddon {
 
 func NewRescueNode() addons.SmartnodeAddon {
 	return rescue_node.NewRescueNode()
+}
+
+func NewObol() addons.SmartnodeAddon {
+	return obol.NewObol()
 }

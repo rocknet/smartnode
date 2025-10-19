@@ -41,6 +41,7 @@ services:
       - BITFLY_NODE_METRICS_MACHINE_NAME={{.BitflyNodeMetrics.MachineName}}
       - GRAFFITI={{.Graffiti}}
       - ADDON_GWW_ENABLED={{.GraffitiWallWriter.GetEnabledParameter}}
+      - ADDON_OBOL_ENABLED={{.Obol.GetEnabledParameter}}
       - MEV_BOOST_URL={{.MevBoostUrl}}
       - ENABLE_MEV_BOOST={{.EnableMevBoost}}
       {{- if eq .ConsensusClient.String "teku"}}

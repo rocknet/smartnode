@@ -1,0 +1,40 @@
+{
+    "name": "Rocket Pool Smart Node",
+    "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+    "features": {
+        "ghcr.io/devcontainers/features/go:1": {
+            "version": "1.25.1"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "moby": false,
+            "dockerDashComposeVersion": "v2"
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "18"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "go.toolsManagement.autoUpdate": true,
+                "go.useLanguageServer": true
+            },
+            "extensions": [
+                "golang.Go",
+                "ms-azuretools.vscode-docker",
+                "redhat.vscode-yaml",
+                "ms-vscode.makefile-tools"
+            ]
+        }
+    },
+    "forwardPorts": [
+        8545,
+        8546,
+        5052,
+        9090,
+        3000,
+        8080
+    ],
+    "remoteUser": "vscode"
+}
